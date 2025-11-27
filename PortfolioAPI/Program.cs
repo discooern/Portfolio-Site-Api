@@ -1,4 +1,6 @@
 
+using Scalar.AspNetCore;
+
 namespace PortfolioAPI
 {
     public class Program
@@ -19,6 +21,12 @@ namespace PortfolioAPI
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference(options =>
+                {
+                    options
+                        .WithTitle("Portfolio API")
+                        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+                });
             }
 
             app.UseHttpsRedirection();
