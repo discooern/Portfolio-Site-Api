@@ -1,4 +1,5 @@
 
+using PortfolioAPI.Models;
 using Scalar.AspNetCore;
 
 namespace PortfolioAPI
@@ -14,6 +15,9 @@ namespace PortfolioAPI
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddSingleton<PortfolioDbContext>();
+            builder.Services.AddTransient<PortfolioDbContext>();
 
             var app = builder.Build();
 
