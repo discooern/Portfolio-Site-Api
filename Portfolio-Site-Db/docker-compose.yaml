@@ -1,0 +1,16 @@
+services:
+    db:
+        image: mysql:8.0
+        container_name: portfolio_db
+        environment:
+            MYSQL_DATABASE: portfoliodb
+            MYSQL_USER: portfolioUser
+            MYSQL_PASSWORD: portfolioPassword
+            MYSQL_ROOT_PASSWORD: rootPassword
+        ports:
+            - "3306:3306"
+        volumes:
+            - db_data:/var/lib/mysql
+            - ./database/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+volumes:
+    db_data:
