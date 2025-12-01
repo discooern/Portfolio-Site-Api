@@ -4,7 +4,7 @@ using PortfolioAPI.Models;
 
 namespace PortfolioAPI.Controllers
 {
-    [Route("[controller]")]
+    [Route("blogposts")]
     [ApiController]
     public class BlogPostController : Controller
     {
@@ -18,7 +18,13 @@ namespace PortfolioAPI.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            var result = await _context.BlogPosts.ToListAsync();
+            var result = await _context.BlogPosts
+                .Select(p => new
+                {
+                    p.Title,
+                    p.Slug
+                })
+                .ToListAsync();
 
             return Ok(result);
         }

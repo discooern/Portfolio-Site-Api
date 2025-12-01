@@ -1,4 +1,5 @@
 
+using PortfolioAPI.Middleware;
 using PortfolioAPI.Models;
 using Scalar.AspNetCore;
 
@@ -35,8 +36,12 @@ namespace PortfolioAPI
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<CorrelationIdMiddleware>();
+            app.UseMiddleware<RequestLoggingMiddleware>();
+
             app.UseAuthorization();
 
+            app.UseMiddleware<ResponseLoggingMiddleware>();
 
             app.MapControllers();
 

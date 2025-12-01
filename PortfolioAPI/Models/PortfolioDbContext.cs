@@ -25,5 +25,6 @@ namespace PortfolioAPI.Models
         }
 
         public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<EventLog> EventLogs { get; set; }
     }
 }
