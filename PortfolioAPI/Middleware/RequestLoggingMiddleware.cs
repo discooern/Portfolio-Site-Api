@@ -22,8 +22,7 @@ namespace PortfolioAPI.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // Skip logging for EventLog endpoint.
-            if (context.Request.Path.StartsWithSegments("/eventlogs", StringComparison.OrdinalIgnoreCase))
+            if (LogExcludeList.ExcludedPaths.Contains<string>(context.Request.Path, StringComparer.OrdinalIgnoreCase))
             {
                 await _next(context);
                 return;
