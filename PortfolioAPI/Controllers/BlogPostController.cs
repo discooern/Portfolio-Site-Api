@@ -56,7 +56,7 @@ namespace PortfolioAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult> CreateBlogPost([FromBody] BlogPostDTO blogPostDTO)
         {
             var newBlogPost = new BlogPost
@@ -84,7 +84,7 @@ namespace PortfolioAPI.Controllers
             return CreatedAtAction("CreateBlogPost", new { id = newBlogPost.Id }, newBlogPost);
         }
 
-        [HttpPut]
+        [HttpPut("put")]
         public async Task<ActionResult> UpdateBlogPost(int id, [FromBody] BlogPostDTO updatedBlogPost)
         {
             var blogPost = await _context.BlogPosts.FindAsync(id);
@@ -103,25 +103,25 @@ namespace PortfolioAPI.Controllers
             return Ok();
         }
 
-        [HttpPatch]
-        public async Task<ActionResult> PatchBlogPost(int id, [FromBody] BlogPostDTO patchedBlogPost)
+        [HttpPatch("patch")]
+        public async Task<ActionResult> PatchBlogPost([FromBody] BlogPost patchedBlogPost)
         {
-            var blogPost = await _context.BlogPosts.FindAsync(id);
+            var blogPost = await _context.BlogPosts.FindAsync(patchedBlogPost.Id);
 
             if (blogPost == null)
             {
                 return NotFound();
             }
 
-            if (patchedBlogPost.Title != null)
+            if (patchedBlogPost.Title != blogPost.Title)
             {
                 blogPost.Title = patchedBlogPost.Title;
             }
-            if (patchedBlogPost.ContentJson != null)
+            if (patchedBlogPost.ContentJson != blogPost.ContentJson)
             {
                 blogPost.ContentJson = patchedBlogPost.ContentJson;
             }
-            if (patchedBlogPost.Slug != null)
+            if (patchedBlogPost.Slug != blogPost.Slug)
             {
                 blogPost.Slug = patchedBlogPost.Slug;
             }
