@@ -142,9 +142,9 @@ namespace PortfolioAPI.Controllers
                 return NotFound();
             }
 
-            //_context.BlogPosts.Remove(blogPost);
+            _context.BlogPosts.Remove(blogPost);
 
-            //await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
