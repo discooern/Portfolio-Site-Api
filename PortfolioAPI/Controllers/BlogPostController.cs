@@ -21,6 +21,7 @@ namespace PortfolioAPI.Controllers
             var result = await _context.BlogPosts
                 .Select(p => new
                 {
+                    p.Id,
                     p.Title,
                     p.Slug
                 })
@@ -42,7 +43,7 @@ namespace PortfolioAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("id")]
         public async Task<ActionResult> GetById(int id)
         {
             var result = await _context.BlogPosts.FirstOrDefaultAsync(p => p.Id == id);
@@ -131,7 +132,7 @@ namespace PortfolioAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("delete")]
         public async Task<ActionResult> DeleteBlogPost(int id)
         {
             var blogPost = await _context.BlogPosts.FindAsync(id);
@@ -141,9 +142,9 @@ namespace PortfolioAPI.Controllers
                 return NotFound();
             }
 
-            _context.BlogPosts.Remove(blogPost);
+            //_context.BlogPosts.Remove(blogPost);
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             return Ok();
         }
