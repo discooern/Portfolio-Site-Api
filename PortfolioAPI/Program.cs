@@ -20,6 +20,17 @@ namespace PortfolioAPI
             builder.Services.AddSingleton<PortfolioDbContext>();
             builder.Services.AddTransient<PortfolioDbContext>();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowVueApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -33,6 +44,8 @@ namespace PortfolioAPI
                         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
                 });
             }
+
+            app.UseCors("AllowVueApp");
 
             app.UseHttpsRedirection();
 

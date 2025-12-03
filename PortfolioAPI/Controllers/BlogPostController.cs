@@ -15,8 +15,8 @@ namespace PortfolioAPI.Controllers
             _context = portfolioDbContext;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetAll()
+        [HttpGet("routes")]
+        public async Task<ActionResult> GetRoutes()
         {
             var result = await _context.BlogPosts
                 .Select(p => new
@@ -25,6 +25,19 @@ namespace PortfolioAPI.Controllers
                     p.Slug
                 })
                 .ToListAsync();
+
+            return Ok(result);
+        }
+
+        [HttpGet("slug")]
+        public async Task<ActionResult> GetBySlug(string slug)
+        {
+            var result = await _context.BlogPosts.FirstOrDefaultAsync(p => p.Slug == slug);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
 
             return Ok(result);
         }
@@ -56,7 +69,8 @@ namespace PortfolioAPI.Controllers
                 CreatedAt = DateTime.Now
             };
 
-            _context.BlogPosts.Add(newBlogPost);
+            await _context.BlogPosts.AddAsync(newBlogPost);
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -65,6 +79,7 @@ namespace PortfolioAPI.Controllers
             {
                 return BadRequest(e.Message);
             }
+
             return CreatedAtAction("CreateBlogPost", new { id = newBlogPost.Id }, newBlogPost);
         }
 
@@ -72,14 +87,18 @@ namespace PortfolioAPI.Controllers
         public async Task<ActionResult> UpdateBlogPost(int id, [FromBody] BlogPostDTO updatedBlogPost)
         {
             var blogPost = await _context.BlogPosts.FindAsync(id);
+
             if (blogPost == null)
             {
                 return NotFound();
             }
+
             blogPost.Title = updatedBlogPost.Title;
             blogPost.ContentJson = updatedBlogPost.ContentJson;
             blogPost.UpdatedAt = DateTime.Now;
+
             await _context.SaveChangesAsync();
+
             return Ok();
         }
 
@@ -92,6 +111,7 @@ namespace PortfolioAPI.Controllers
             {
                 return NotFound();
             }
+
             if (patchedBlogPost.Title != null)
             {
                 blogPost.Title = patchedBlogPost.Title;
@@ -107,6 +127,7 @@ namespace PortfolioAPI.Controllers
             blogPost.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
+
             return Ok();
         }
 
@@ -114,12 +135,16 @@ namespace PortfolioAPI.Controllers
         public async Task<ActionResult> DeleteBlogPost(int id)
         {
             var blogPost = await _context.BlogPosts.FindAsync(id);
+
             if (blogPost == null)
             {
                 return NotFound();
             }
+
             _context.BlogPosts.Remove(blogPost);
+
             await _context.SaveChangesAsync();
+
             return Ok();
         }
     }
