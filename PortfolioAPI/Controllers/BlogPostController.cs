@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortfolioAPI.Models;
+using System.Text.RegularExpressions;
 
 namespace PortfolioAPI.Controllers
 {
@@ -59,12 +60,14 @@ namespace PortfolioAPI.Controllers
         [HttpPost("create")]
         public async Task<ActionResult> CreateBlogPost([FromBody] BlogPostDTO blogPostDTO)
         {
+            string slug = FormatSlug(blogPostDTO.Title);
+
             var newBlogPost = new BlogPost
             {
                 Title = blogPostDTO.Title,
-                Slug = blogPostDTO.Slug,
+                Slug = slug,
                 ContentJson = blogPostDTO.ContentJson,
-                Summary = blogPostDTO.Summary,
+                Summary = "Insert epic summary here.",
                 IsPublished = blogPostDTO.IsPublished,
                 AuthorId = blogPostDTO.AuthorId ?? 0,
                 CreatedAt = DateTime.Now
@@ -116,14 +119,13 @@ namespace PortfolioAPI.Controllers
             if (patchedBlogPost.Title != blogPost.Title)
             {
                 blogPost.Title = patchedBlogPost.Title;
+
+                string slug = FormatSlug(patchedBlogPost.Title);
+                blogPost.Slug = slug;
             }
             if (patchedBlogPost.ContentJson != blogPost.ContentJson)
             {
                 blogPost.ContentJson = patchedBlogPost.ContentJson;
-            }
-            if (patchedBlogPost.Slug != blogPost.Slug)
-            {
-                blogPost.Slug = patchedBlogPost.Slug;
             }
             blogPost.UpdatedAt = DateTime.Now;
 
@@ -147,6 +149,23 @@ namespace PortfolioAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        private string FormatSlug(string val)
+        {
+            // Convert to lower case
+            string slug = val.ToLowerInvariant();
+
+            // Remove invalid characters
+            slug = Regex.Replace(slug, @"[^a-z0-9\s-]", "");
+
+            // Replace multiple spaces with a single hyphen
+            slug = Regex.Replace(slug, @"\s+", "-").Trim('-');
+
+            // Collapse multiple hyphens
+            slug = Regex.Replace(slug, @"-+", "-");
+
+            return slug;
         }
     }
 }
